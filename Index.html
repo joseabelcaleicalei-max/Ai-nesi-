@@ -1,1 +1,603 @@
 
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b0b">
+<title>NESÍ AI | Game Analyzer</title>
+
+<style>
+:root {
+  --bg: #090909;
+  --panel: #141414;
+  --gold: #d6ad55;
+  --gold2: #f1d58b;
+  --white: #f5f5f5;
+  --muted: #999;
+  --border: #302719;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  background: #101010;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  color: var(--gold);
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.logo span {
+  color: white;
+}
+
+.status {
+  color: #d6ad55;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  padding: 7px 10px;
+  border-radius: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 22px 16px;
+}
+
+.welcome {
+  margin-bottom: 25px;
+}
+
+.welcome h1 {
+  font-size: 25px;
+  margin-bottom: 8px;
+}
+
+.welcome h1 span {
+  color: var(--gold);
+}
+
+.welcome p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.section-title {
+  color: var(--gold);
+  font-size: 14px;
+  margin: 25px 0 13px;
+  letter-spacing: 1px;
+}
+
+.games {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.game {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 17px 10px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.game:hover,
+.game.active {
+  border-color: var(--gold);
+  background: #211b10;
+}
+
+.game .emoji {
+  font-size: 26px;
+  display: block;
+  margin-bottom: 9px;
+}
+
+.game strong {
+  font-size: 14px;
+}
+
+.game small {
+  display: block;
+  color: var(--muted);
+  margin-top: 5px;
+  font-size: 10px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 18px;
+  margin-bottom: 15px;
+}
+
+.panel h3 {
+  color: var(--gold2);
+  font-size: 15px;
+  margin-bottom: 15px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.metric {
+  background: #101010;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #29231a;
+}
+
+.metric small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.metric h2 {
+  color: var(--gold);
+  margin-top: 9px;
+  font-size: 23px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 13px 0 7px;
+}
+
+input, select {
+  width: 100%;
+  padding: 13px;
+  background: #090909;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: white;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--gold);
+}
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  background: linear-gradient(120deg, #a77c2e, #efd48a);
+  border: none;
+  border-radius: 8px;
+  color: #111;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: scale(.98);
+}
+
+.history {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+th, td {
+  padding: 13px 9px;
+  border-bottom: 1px solid #29231a;
+  white-space: nowrap;
+}
+
+th {
+  color: var(--gold);
+}
+
+td {
+  color: #ddd;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 25px 5px;
+  font-size: 12px;
+}
+
+.notice {
+  color: #aaa;
+  background: #17140e;
+  border-left: 3px solid var(--gold);
+  padding: 13px;
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 20px;
+}
+
+footer {
+  text-align: center;
+  padding: 25px 10px;
+  color: #777;
+  font-size: 11px;
+}
+
+@media(min-width:700px) {
+  .games {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .metrics {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .welcome h1 {
+    font-size: 32px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NESÍ <span>AI</span></div>
+  <div class="status">● SISTEMA ONLINE</div>
+</header>
+
+<main class="container">
+
+  <section class="welcome">
+    <h1>Intelligent <span>Game Analyzer</span></h1>
+    <p>
+      Plataforma inteligente de análise estatística,
+      histórico e interpretação de resultados.
+    </p>
+  </section>
+
+  <h3 class="section-title">01 / SELECIONAR JOGO</h3>
+
+  <section class="games">
+
+    <button class="game active" data-game="Aviator">
+      <span class="emoji">✈️</span>
+      <strong>Aviator</strong>
+      <small>Crash Analysis</small>
+    </button>
+
+    <button class="game" data-game="Spaceman">
+      <span class="emoji">🚀</span>
+      <strong>Spaceman</strong>
+      <small>Crash Analysis</small>
+    </button>
+
+    <button class="game" data-game="JetX">
+      <span class="emoji">⚡</span>
+      <strong>JetX</strong>
+      <small>Crash Analysis</small>
+    </button>
+
+    <button class="game" data-game="Bac Bo">
+      <span class="emoji">🎲</span>
+      <strong>Bac Bo</strong>
+      <small>Dice Analysis</small>
+    </button>
+
+  </section>
+
+  <h3 class="section-title">02 / PAINEL ESTATÍSTICO</h3>
+
+  <section class="metrics">
+
+    <div class="metric">
+      <small>Jogo selecionado</small>
+      <h2 id="selectedGame">Aviator</h2>
+    </div>
+
+    <div class="metric">
+      <small>Rondas registadas</small>
+      <h2 id="total">0</h2>
+    </div>
+
+    <div class="metric">
+      <small>Média histórica</small>
+      <h2 id="average">--</h2>
+    </div>
+
+    <div class="metric">
+      <small>Maior resultado</small>
+      <h2 id="highest">--</h2>
+    </div>
+
+  </section>
+
+  <h3 class="section-title">03 / REGISTAR RESULTADOS</h3>
+
+  <section class="panel">
+
+    <h3>Entrada de dados</h3>
+
+    <div id="crashInput">
+      <label>Multiplicador observado</label>
+      <input
+        type="number"
+        id="multiplier"
+        placeholder="Exemplo: 2.45"
+        min="1"
+        step="0.01"
+      >
+    </div>
+
+    <div id="bacboInput" style="display:none">
+      <label>Resultado observado</label>
+      <select id="bacboResult">
+        <option value="Player">Player</option>
+        <option value="Banker">Banker</option>
+        <option value="Tie">Tie</option>
+      </select>
+    </div>
+
+    <button class="btn" onclick="addResult()">
+      + REGISTAR RESULTADO
+    </button>
+
+  </section>
+
+  <h3 class="section-title">04 / HISTÓRICO</h3>
+
+  <section class="panel history">
+
+    <h3>Resultados registados</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Jogo</th>
+          <th>Resultado</th>
+          <th>Registo</th>
+        </tr>
+      </thead>
+
+      <tbody id="history">
+        <tr>
+          <td colspan="3" class="empty">
+            Ainda não existem resultados registados.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <section class="panel">
+    <h3>Interpretação estatística</h3>
+    <p id="analysis" class="empty">
+      Registe resultados para começar a análise.
+    </p>
+  </section>
+
+  <div class="notice">
+    IMPORTANTE: os dados históricos não garantem resultados
+    futuros. O NESÍ AI apresenta análises estatísticas,
+    não previsões infalíveis.
+  </div>
+
+</main>
+
+<footer>
+  NESÍ AI © 2026 — Intelligent Game Analyzer
+  <br><br>
+  Tecnologia • Estatística • Análise
+</footer>
+
+<script>
+let currentGame = "Aviator";
+let records = [];
+
+try {
+  records = JSON.parse(
+    localStorage.getItem("nesi_records") || "[]"
+  );
+
+  if (!Array.isArray(records)) records = [];
+} catch {
+  records = [];
+}
+
+const gameButtons = document.querySelectorAll(".game");
+
+gameButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    gameButtons.forEach(b => b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    currentGame = button.dataset.game;
+
+    document.getElementById("selectedGame").textContent =
+      currentGame;
+
+    document.getElementById("crashInput").style.display =
+      currentGame === "Bac Bo" ? "none" : "block";
+
+    document.getElementById("bacboInput").style.display =
+      currentGame === "Bac Bo" ? "block" : "none";
+
+    render();
+  });
+});
+
+function addResult() {
+  let result;
+
+  if (currentGame === "Bac Bo") {
+    result = document.getElementById("bacboResult").value;
+  } else {
+    const value = Number(
+      document.getElementById("multiplier").value
+    );
+
+    if (!Number.isFinite(value) || value < 1) {
+      alert("Introduza um multiplicador válido.");
+      return;
+    }
+
+    result = value;
+    document.getElementById("multiplier").value = "";
+  }
+
+  records.unshift({
+    game: currentGame,
+    result: result,
+    date: new Date().toLocaleString("pt-PT")
+  });
+
+  try {
+    localStorage.setItem(
+      "nesi_records",
+      JSON.stringify(records)
+    );
+  } catch {
+    alert("Não foi possível guardar os dados neste dispositivo.");
+  }
+
+  render();
+}
+
+function render() {
+  const data = records.filter(
+    item => item.game === currentGame
+  );
+
+  document.getElementById("total").textContent =
+    data.length;
+
+  const history = document.getElementById("history");
+  const analysis = document.getElementById("analysis");
+
+  if (data.length === 0) {
+    document.getElementById("average").textContent = "--";
+    document.getElementById("highest").textContent = "--";
+
+    history.innerHTML = `
+      <tr>
+        <td colspan="3" class="empty">
+          Ainda não existem resultados registados.
+        </td>
+      </tr>
+    `;
+
+    analysis.textContent =
+      "Registe resultados para começar a análise.";
+
+    return;
+  }
+
+  if (currentGame === "Bac Bo") {
+    document.getElementById("average").textContent = "N/A";
+    document.getElementById("highest").textContent = "N/A";
+
+    const counts = {
+      Player: 0,
+      Banker: 0,
+      Tie: 0
+    };
+
+    data.forEach(item => counts[item.result]++);
+
+    analysis.textContent =
+      "Player: " + counts.Player +
+      " | Banker: " + counts.Banker +
+      " | Tie: " + counts.Tie +
+      ". Frequências observadas em " + data.length +
+      " rondas. Não representam garantia do próximo resultado.";
+
+  } else {
+    const values = data.map(item => Number(item.result));
+
+    const average = values.reduce((a,b) => a+b, 0)
+      / values.length;
+
+    const highest = Math.max(...values);
+
+    document.getElementById("average").textContent =
+      average.toFixed(2) + "x";
+
+    document.getElementById("highest").textContent =
+      highest.toFixed(2) + "x";
+
+    const low = values.filter(v => v < 2).length;
+    const medium = values.filter(v => v >= 2 && v < 10).length;
+    const high = values.filter(v => v >= 10).length;
+
+    analysis.textContent =
+      "Abaixo de 2x: " + low +
+      " | Entre 2x e 10x: " + medium +
+      " | A partir de 10x: " + high +
+      ". Frequências históricas, sem poder preditivo garantido.";
+  }
+
+  history.innerHTML = data.slice(0, 50).map(item => `
+    <tr>
+      <td>${escapeHTML(item.game)}</td>
+      <td>${escapeHTML(String(item.result))}${
+        item.game === "Bac Bo" ? "" : "x"
+      }</td>
+      <td>${escapeHTML(item.date)}</td>
+    </tr>
+  `).join("");
+}
+
+function escapeHTML(value) {
+  return value.replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+render();
+</script>
+
+</body>
+</html>
+
