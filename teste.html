@@ -1,1 +1,76 @@
 
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NESÍ AI — Diagnóstico</title>
+  <style>
+    body {
+      background: #101010;
+      color: #f0d078;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 { text-align: center; }
+    .modulo {
+      background: #202020;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    .ok { color: #55d68b; }
+    .erro { color: #ff6969; }
+  </style>
+</head>
+<body>
+
+<h1>NESÍ AI</h1>
+<p>Diagnóstico dos módulos</p>
+
+<div id="resultado"></div>
+
+<script src="games.js"></script>
+<script src="statistics.js"></script>
+<script src="analyzer.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+
+<script>
+const resultado = document.getElementById("resultado");
+
+const modulos = {
+  "Gestor de jogos": typeof NesiGames !== "undefined",
+  "Motor de estatísticas": typeof NesiStatistics !== "undefined",
+  "Motor de análise": typeof NesiAnalyzer !== "undefined",
+  "Motor de gráficos": typeof NesiCharts !== "undefined",
+  "Controlador principal": typeof NesiApp !== "undefined"
+};
+
+Object.entries(modulos).forEach(([nome, ativo]) => {
+  resultado.innerHTML += `
+    <div class="modulo">
+      ${nome}:
+      <strong class="${ativo ? "ok" : "erro"}">
+        ${ativo ? "CARREGADO" : "NÃO CARREGADO"}
+      </strong>
+    </div>
+  `;
+});
+
+if (typeof NesiApp !== "undefined") {
+  const estado = NesiApp.inicializar();
+
+  resultado.innerHTML += `
+    <div class="modulo">
+      <h3>Estado geral</h3>
+      <p>${estado.estado}</p>
+      <p>Módulos ativos: ${estado.totalModulos}/4</p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
