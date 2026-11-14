@@ -49,13 +49,17 @@ const modulos = {
 };
 
 Object.entries(modulos).forEach(([nome, ativo]) => {
-  resultado.innerHTML += `
-    <div class="modulo">
-      ${nome}:
-      <strong class="${ativo ? "ok" : "erro"}">
-        ${ativo ? "CARREGADO" : "NÃO CARREGADO"}
-      </strong>
-    </div>
+  const caixa = document.createElement("div");
+caixa.className = "modulo";
+
+const estado = document.createElement("strong");
+estado.className = ativo ? "ok" : "erro";
+estado.textContent = ativo ? "CARREGADO" : "NÃO CARREGADO";
+
+caixa.textContent = nome + ": ";
+caixa.appendChild(estado);
+
+resultado.appendChild(caixa);
   `;
 });
 
