@@ -1,11 +1,11 @@
 
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NESÍ AI — Diagnóstico</title>
+
   <style>
     body {
       background: #101010;
@@ -13,23 +13,27 @@
       font-family: Arial, sans-serif;
       padding: 20px;
     }
+
     h1 { text-align: center; }
+
     .modulo {
       background: #202020;
       padding: 14px;
       margin: 10px 0;
       border-radius: 8px;
     }
+
     .ok { color: #55d68b; }
     .erro { color: #ff6969; }
   </style>
 </head>
+
 <body>
 
 <h1>NESÍ AI</h1>
 <p>Diagnóstico dos módulos</p>
 
-<div id="resultado"></div>
+<div id="resultado">A verificar módulos...</div>
 
 <script src="games.js"></script>
 <script src="statistics.js"></script>
@@ -48,31 +52,34 @@ const modulos = {
   "Controlador principal": typeof NesiApp !== "undefined"
 };
 
+resultado.innerHTML = "";
+
 Object.entries(modulos).forEach(([nome, ativo]) => {
   const caixa = document.createElement("div");
-caixa.className = "modulo";
+  caixa.className = "modulo";
 
-const estado = document.createElement("strong");
-estado.className = ativo ? "ok" : "erro";
-estado.textContent = ativo ? "CARREGADO" : "NÃO CARREGADO";
+  const estado = document.createElement("strong");
+  estado.className = ativo ? "ok" : "erro";
+  estado.textContent = ativo ? "CARREGADO" : "NÃO CARREGADO";
 
-caixa.textContent = nome + ": ";
-caixa.appendChild(estado);
+  caixa.textContent = nome + ": ";
+  caixa.appendChild(estado);
 
-resultado.appendChild(caixa);
-  `;
+  resultado.appendChild(caixa);
 });
 
 if (typeof NesiApp !== "undefined") {
-  const estado = NesiApp.inicializar();
+  const geral = NesiApp.inicializar();
 
-  resultado.innerHTML += `
-    <div class="modulo">
-      <h3>Estado geral</h3>
-      <p>${estado.estado}</p>
-      <p>Módulos ativos: ${estado.totalModulos}/4</p>
-    </div>
-  `;
+  const caixa = document.createElement("div");
+  caixa.className = "modulo";
+
+  caixa.innerHTML =
+    "<h3>Estado geral</h3>" +
+    "<p>" + geral.estado + "</p>" +
+    "<p>Módulos ativos: " + geral.totalModulos + "/4</p>";
+
+  resultado.appendChild(caixa);
 }
 </script>
 
