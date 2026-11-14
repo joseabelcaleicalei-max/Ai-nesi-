@@ -1,1 +1,407 @@
 
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>NESÍ AI | Laboratório</title>
+
+<style>
+:root {
+  --gold: #d6ad45;
+  --bg: #080808;
+  --panel: #121212;
+  --text: #f4f0e5;
+  --muted: #999;
+  --border: #292929;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 22px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: var(--gold);
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.status {
+  color: #7bd89a;
+  font-size: 11px;
+}
+
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 25px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 18px;
+  margin-top: 18px;
+}
+
+.panel h2 {
+  font-size: 16px;
+  margin-top: 0;
+  color: var(--gold);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.metric {
+  background: #191919;
+  border: 1px solid var(--border);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.metric small {
+  display: block;
+  color: var(--muted);
+  margin-bottom: 9px;
+}
+
+.metric strong {
+  font-size: 22px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--gold);
+  color: #111;
+}
+
+.secondary {
+  background: #292929;
+  color: white;
+}
+
+.danger {
+  background: #492020;
+  color: white;
+}
+
+.chart {
+  display: flex;
+  align-items: end;
+  gap: 5px;
+  height: 170px;
+  padding-top: 15px;
+  border-bottom: 1px solid #444;
+}
+
+.bar {
+  flex: 1;
+  min-width: 3px;
+  background: var(--gold);
+  border-radius: 4px 4px 0 0;
+  position: relative;
+}
+
+.bar span {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.history-item {
+  background: #202020;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+}
+
+.notice {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #777;
+  font-size: 11px;
+}
+
+@media (min-width: 650px) {
+  .metrics { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NESÍ AI</div>
+  <div class="status">● SISTEMA ACTIVO</div>
+</header>
+
+<main>
+
+  <h1>Laboratório de Aleatoriedade</h1>
+  <p class="subtitle">
+    Ambiente educativo para simular sequências numéricas,
+    observar distribuições e compreender estatística.
+  </p>
+
+  <section class="panel">
+    <h2>Simulador de sequências</h2>
+    <p class="notice">
+      Gera observações aleatórias para experiências estatísticas.
+      Os valores são simulados pelo próprio navegador.
+    </p>
+
+    <div class="controls">
+      <button class="primary" onclick="gerar(10)">
+        Gerar 10 valores
+      </button>
+      <button class="primary" onclick="gerar(50)">
+        Gerar 50 valores
+      </button>
+      <button class="secondary" onclick="gerar(100)">
+        Gerar 100 valores
+      </button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Indicadores estatísticos</h2>
+
+    <div class="metrics">
+      <div class="metric">
+        <small>Total de observações</small>
+        <strong id="total">0</strong>
+      </div>
+
+      <div class="metric">
+        <small>Média</small>
+        <strong id="media">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Valor mínimo</small>
+        <strong id="minimo">—</strong>
+      </div>
+
+      <div class="metric">
+        <small>Valor máximo</small>
+        <strong id="maximo">—</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Distribuição dos valores</h2>
+    <p class="notice">
+      O gráfico agrupa as observações em intervalos de valores.
+    </p>
+    <div class="chart" id="grafico"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Histórico da experiência</h2>
+    <div class="history" id="historico">
+      <p class="notice">Ainda não existem observações.</p>
+    </div>
+
+    <div class="controls">
+      <button class="secondary" onclick="limpar()">
+        Limpar experiência
+      </button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Interpretação</h2>
+    <p class="notice" id="interpretacao">
+      Gera uma sequência para começar a experiência.
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>Sobre o NESÍ</h2>
+    <p class="notice">
+      O NESÍ apresenta ferramentas educativas de análise de dados.
+      Estatísticas de observações anteriores não permitem conhecer
+      com certeza o próximo resultado de uma sequência aleatória.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  NESÍ AI © 2026 — Laboratório de aprendizagem estatística
+</footer>
+
+<script>
+let dados = [];
+
+function guardar() {
+  localStorage.setItem("nesi_experiencia", JSON.stringify(dados));
+}
+
+function gerar(quantidade) {
+  for (let i = 0; i < quantidade; i++) {
+    dados.push(Math.floor(Math.random() * 100) + 1);
+  }
+
+  guardar();
+  atualizar();
+}
+
+function atualizar() {
+  document.getElementById("total").textContent = dados.length;
+
+  if (dados.length === 0) {
+    document.getElementById("media").textContent = "—";
+    document.getElementById("minimo").textContent = "—";
+    document.getElementById("maximo").textContent = "—";
+    document.getElementById("grafico").innerHTML = "";
+    document.getElementById("historico").innerHTML =
+      '<p class="notice">Ainda não existem observações.</p>';
+    document.getElementById("interpretacao").textContent =
+      "Gera uma sequência para começar a experiência.";
+    return;
+  }
+
+  const soma = dados.reduce((a, b) => a + b, 0);
+  const media = soma / dados.length;
+  const minimo = Math.min(...dados);
+  const maximo = Math.max(...dados);
+
+  document.getElementById("media").textContent = media.toFixed(2);
+  document.getElementById("minimo").textContent = minimo;
+  document.getElementById("maximo").textContent = maximo;
+
+  desenharGrafico();
+  mostrarHistorico();
+
+  document.getElementById("interpretacao").textContent =
+    `Foram observadas ${dados.length} amostras. ` +
+    `A média foi ${media.toFixed(2)}, com valores entre ` +
+    `${minimo} e ${maximo}. Estes indicadores descrevem ` +
+    `a amostra gerada e não determinam valores futuros.`;
+}
+
+function desenharGrafico() {
+  const intervalos = Array(10).fill(0);
+
+  dados.forEach(valor => {
+    const indice = Math.min(9, Math.floor(valor / 10));
+    intervalos[indice]++;
+  });
+
+  const maior = Math.max(...intervalos, 1);
+  const grafico = document.getElementById("grafico");
+
+  grafico.innerHTML = intervalos.map((qtd, i) => {
+    const altura = (qtd / maior) * 135;
+
+    return `
+      <div class="bar"
+           style="height:${altura}px"
+           title="${qtd} observações">
+        <span>${i * 10 + 1}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function mostrarHistorico() {
+  const ultimos = dados.slice(-40).reverse();
+
+  document.getElementById("historico").innerHTML =
+    ultimos.map((valor, i) =>
+      `<div class="history-item">${valor}</div>`
+    ).join("");
+}
+
+function limpar() {
+  if (!confirm("Queres apagar toda a experiência?")) return;
+
+  dados = [];
+  guardar();
+  atualizar();
+}
+
+try {
+  dados = JSON.parse(
+    localStorage.getItem("nesi_experiencia") || "[]"
+  );
+
+  if (!Array.isArray(dados) ||
+      !dados.every(n => Number.isInteger(n) && n >= 1 && n <= 100)) {
+    dados = [];
+  }
+} catch {
+  dados = [];
+}
+
+atualizar();
+</script>
+
+</body>
+</html>
+
