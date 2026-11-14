@@ -1,14 +1,13 @@
 
-
 /*
  NESÍ AI — CONTROLADOR PRINCIPAL
- Versão 1.1
+ Versão 1.2
 */
 
 const NesiApp = {
 
   nome: "NESÍ AI",
-  versao: "1.1",
+  versao: "1.2",
 
   inicializar() {
     const modulos = {
@@ -16,7 +15,8 @@ const NesiApp = {
       analise: typeof NesiAnalyzer !== "undefined",
       estatisticas: typeof NesiStatistics !== "undefined",
       graficos: typeof NesiCharts !== "undefined",
-      validacao: typeof NesiValidator !== "undefined"
+      validacao: typeof NesiValidator !== "undefined",
+      laboratorio: typeof NesiModelLab !== "undefined"
     };
 
     const ativos = Object.values(modulos).filter(Boolean).length;
@@ -26,7 +26,7 @@ const NesiApp = {
       versao: this.versao,
       modulos,
       totalModulos: ativos,
-      estado: ativos === 5 ? "OPERACIONAL" : "EM INTEGRACAO"
+      estado: ativos === 6 ? "OPERACIONAL" : "EM INTEGRACAO"
     };
   },
 
@@ -45,16 +45,31 @@ const NesiApp = {
   analisarDados(dados) {
     return typeof NesiAnalyzer !== "undefined"
       ? NesiAnalyzer.analisar(dados)
-      : {
-          sucesso: false,
-          mensagem: "Motor de análise indisponível."
-        };
+      : null;
   },
 
   obterEstatisticas(dados) {
     return typeof NesiStatistics !== "undefined"
       ? NesiStatistics.resumo(dados)
       : null;
+  },
+
+  executarExperiencia(dados, nomeModelo) {
+    return typeof NesiModelLab !== "undefined"
+      ? NesiModelLab.executar(dados, nomeModelo)
+      : null;
+  },
+
+  compararExperiencias(resultadoA, resultadoB) {
+    return typeof NesiModelLab !== "undefined"
+      ? NesiModelLab.comparar(resultadoA, resultadoB)
+      : null;
+  },
+
+  historicoExperiencias() {
+    return typeof NesiModelLab !== "undefined"
+      ? NesiModelLab.historico()
+      : [];
   },
 
   gerarGrafico(dados, elementoId) {
