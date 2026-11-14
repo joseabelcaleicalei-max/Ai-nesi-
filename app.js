@@ -2,20 +2,21 @@
 
 /*
  NESÍ AI — CONTROLADOR PRINCIPAL
- Versão 1.0
+ Versão 1.1
 */
 
 const NesiApp = {
 
-  versao: "1.0",
   nome: "NESÍ AI",
+  versao: "1.1",
 
   inicializar() {
     const modulos = {
       jogos: typeof NesiGames !== "undefined",
       analise: typeof NesiAnalyzer !== "undefined",
       estatisticas: typeof NesiStatistics !== "undefined",
-      graficos: typeof NesiCharts !== "undefined"
+      graficos: typeof NesiCharts !== "undefined",
+      validacao: typeof NesiValidator !== "undefined"
     };
 
     const ativos = Object.values(modulos).filter(Boolean).length;
@@ -25,41 +26,39 @@ const NesiApp = {
       versao: this.versao,
       modulos,
       totalModulos: ativos,
-      estado: ativos === 4 ? "OPERACIONAL" : "EM INTEGRACAO"
+      estado: ativos === 5 ? "OPERACIONAL" : "EM INTEGRACAO"
     };
   },
 
   obterJogos() {
-    if (typeof NesiGames === "undefined") {
-      return [];
-    }
+    return typeof NesiGames !== "undefined"
+      ? NesiGames.listar()
+      : [];
+  },
 
-    return NesiGames.listar();
+  validarDados(dados) {
+    return typeof NesiValidator !== "undefined"
+      ? NesiValidator.validar(dados)
+      : null;
   },
 
   analisarDados(dados) {
-    if (typeof NesiAnalyzer === "undefined") {
-      return {
-        sucesso: false,
-        mensagem: "Motor de análise indisponível."
-      };
-    }
-
-    return NesiAnalyzer.analisar(dados);
+    return typeof NesiAnalyzer !== "undefined"
+      ? NesiAnalyzer.analisar(dados)
+      : {
+          sucesso: false,
+          mensagem: "Motor de análise indisponível."
+        };
   },
 
   obterEstatisticas(dados) {
-    if (typeof NesiStatistics === "undefined") {
-      return null;
-    }
-
-    return NesiStatistics.resumo(dados);
+    return typeof NesiStatistics !== "undefined"
+      ? NesiStatistics.resumo(dados)
+      : null;
   },
 
   gerarGrafico(dados, elementoId) {
-    if (typeof NesiCharts === "undefined") {
-      return false;
-    }
+    if (typeof NesiCharts === "undefined") return false;
 
     NesiCharts.criarBarras(dados, elementoId);
     return true;
