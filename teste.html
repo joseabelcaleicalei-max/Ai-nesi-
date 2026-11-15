@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -39,22 +40,19 @@
 <script src="statistics.js"></script>
 <script src="analyzer.js"></script>
 <script src="charts.js"></script>
+<script src="validator.js"></script>
+<script src="model-lab.js"></script>
+<script src="storage.js"></script>
 <script src="app.js"></script>
 
 <script>
 const resultado = document.getElementById("resultado");
 
-const modulos = {
-  "Gestor de jogos": typeof NesiGames !== "undefined",
-  "Motor de estatísticas": typeof NesiStatistics !== "undefined",
-  "Motor de análise": typeof NesiAnalyzer !== "undefined",
-  "Motor de gráficos": typeof NesiCharts !== "undefined",
-  "Controlador principal": typeof NesiApp !== "undefined"
-};
+const diagnostico = NesiApp.inicializar();
 
 resultado.innerHTML = "";
 
-Object.entries(modulos).forEach(([nome, ativo]) => {
+Object.entries(diagnostico.modulos).forEach(([nome, ativo]) => {
   const caixa = document.createElement("div");
   caixa.className = "modulo";
 
@@ -62,25 +60,22 @@ Object.entries(modulos).forEach(([nome, ativo]) => {
   estado.className = ativo ? "ok" : "erro";
   estado.textContent = ativo ? "CARREGADO" : "NÃO CARREGADO";
 
-  caixa.textContent = nome + ": ";
+  caixa.textContent = nome.toUpperCase() + ": ";
   caixa.appendChild(estado);
 
   resultado.appendChild(caixa);
 });
 
-if (typeof NesiApp !== "undefined") {
-  const geral = NesiApp.inicializar();
+const geral = document.createElement("div");
+geral.className = "modulo";
 
-  const caixa = document.createElement("div");
-  caixa.className = "modulo";
+geral.innerHTML =
+  "<h3>Estado geral</h3>" +
+  "<p>" + diagnostico.estado + "</p>" +
+  "<p>Módulos ativos: " +
+  diagnostico.totalModulos + "/7</p>";
 
-  caixa.innerHTML =
-    "<h3>Estado geral</h3>" +
-    "<p>" + geral.estado + "</p>" +
-    "<p>Módulos ativos: " + geral.totalModulos + "/4</p>";
-
-  resultado.appendChild(caixa);
-}
+resultado.appendChild(geral);
 </script>
 
 </body>
