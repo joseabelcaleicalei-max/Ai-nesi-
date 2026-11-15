@@ -1,13 +1,14 @@
 
+
 /*
  NESÍ AI — CONTROLADOR PRINCIPAL
- Versão 1.2
+ Versão 1.3
 */
 
 const NesiApp = {
 
   nome: "NESÍ AI",
-  versao: "1.2",
+  versao: "1.3",
 
   inicializar() {
     const modulos = {
@@ -16,7 +17,8 @@ const NesiApp = {
       estatisticas: typeof NesiStatistics !== "undefined",
       graficos: typeof NesiCharts !== "undefined",
       validacao: typeof NesiValidator !== "undefined",
-      laboratorio: typeof NesiModelLab !== "undefined"
+      laboratorio: typeof NesiModelLab !== "undefined",
+      armazenamento: typeof NesiStorage !== "undefined"
     };
 
     const ativos = Object.values(modulos).filter(Boolean).length;
@@ -26,7 +28,7 @@ const NesiApp = {
       versao: this.versao,
       modulos,
       totalModulos: ativos,
-      estado: ativos === 6 ? "OPERACIONAL" : "EM INTEGRACAO"
+      estado: ativos === 7 ? "OPERACIONAL" : "EM INTEGRACAO"
     };
   },
 
@@ -70,6 +72,42 @@ const NesiApp = {
     return typeof NesiModelLab !== "undefined"
       ? NesiModelLab.historico()
       : [];
+  },
+
+  guardarRegisto(jogoId, resultado) {
+    return typeof NesiStorage !== "undefined"
+      ? NesiStorage.adicionar(jogoId, resultado)
+      : null;
+  },
+
+  obterHistorico(jogoId = null) {
+    return typeof NesiStorage !== "undefined"
+      ? NesiStorage.listar(jogoId)
+      : [];
+  },
+
+  removerRegisto(id) {
+    return typeof NesiStorage !== "undefined"
+      ? NesiStorage.remover(id)
+      : false;
+  },
+
+  limparHistorico(jogoId = null) {
+    return typeof NesiStorage !== "undefined"
+      ? NesiStorage.limpar(jogoId)
+      : false;
+  },
+
+  exportarHistorico() {
+    return typeof NesiStorage !== "undefined"
+      ? NesiStorage.exportar()
+      : null;
+  },
+
+  importarHistorico(conteudo) {
+    return typeof NesiStorage !== "undefined"
+      ? NesiStorage.importar(conteudo)
+      : false;
   },
 
   gerarGrafico(dados, elementoId) {
