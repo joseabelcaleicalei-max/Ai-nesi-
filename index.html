@@ -426,6 +426,22 @@ atualizar();
   <p id="nesi-modules">Módulos: a verificar...</p>
   <p id="nesi-records">Registos históricos: a verificar...</p>
 </section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const estado = NesiDashboard.obterEstado();
+  const resumo = NesiDashboard.obterResumo();
+
+  document.getElementById("nesi-status").textContent =
+    "Estado do sistema: " + estado.estado;
+
+  document.getElementById("nesi-modules").textContent =
+    "Módulos ativos: " + estado.modulosAtivos +
+    " de " + estado.totalModulos;
+
+  document.getElementById("nesi-records").textContent =
+    "Registos históricos: " + resumo.totalRegistos;
+});
+</script>
 </body>
 </html>
 
