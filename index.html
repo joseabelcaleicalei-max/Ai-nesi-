@@ -496,8 +496,27 @@ document.getElementById("nesi-guardar").addEventListener("click", function () {
 
   document.getElementById("nesi-resultado").value = "";
 
-  document.getElementById("nesi-records").textContent =
-    "Registos históricos: " + NesiStorage.total();
+  const historico = NesiApp.obterHistorico();
+
+document.getElementById("nesi-records").textContent =
+  "Registos históricos: " + historico.length;
+
+const valores = historico
+  .filter(registo => typeof registo.resultado === "number")
+  .map(registo => registo.resultado);
+
+const linha = document.getElementById("nesi-statistics");
+
+if (valores.length >= 2) {
+  const stats = NesiApp.obterEstatisticas(valores);
+
+  linha.textContent =
+    "Média: " + stats.media +
+    " | Mínimo: " + stats.minimo +
+    " | Máximo: " + stats.maximo;
+} else {
+  linha.textContent = "São necessários pelo menos 2 registos numéricos.";
+}
 });
 const historico = NesiApp.obterHistorico();
 
