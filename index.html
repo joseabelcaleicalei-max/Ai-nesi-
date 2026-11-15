@@ -499,6 +499,20 @@ document.getElementById("nesi-guardar").addEventListener("click", function () {
   document.getElementById("nesi-records").textContent =
     "Registos históricos: " + NesiStorage.total();
 });
+const historico = NesiApp.obterHistorico();
+
+const valores = historico
+  .filter(registo => typeof registo.resultado === "number")
+  .map(registo => registo.resultado);
+
+if (valores.length >= 2) {
+  const stats = NesiApp.obterEstatisticas(valores);
+
+  document.getElementById("nesi-statistics").textContent =
+    "Média: " + stats.media +
+    " | Mínimo: " + stats.minimo +
+    " | Máximo: " + stats.maximo;
+}
 </script>
 </body>
 </html>
