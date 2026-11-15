@@ -1,14 +1,13 @@
 
-
 /*
  NESÍ AI — CONTROLADOR PRINCIPAL
- Versão 1.3
+ Versão 1.4
 */
 
 const NesiApp = {
 
   nome: "NESÍ AI",
-  versao: "1.3",
+  versao: "1.4",
 
   inicializar() {
     const modulos = {
@@ -18,7 +17,8 @@ const NesiApp = {
       graficos: typeof NesiCharts !== "undefined",
       validacao: typeof NesiValidator !== "undefined",
       laboratorio: typeof NesiModelLab !== "undefined",
-      armazenamento: typeof NesiStorage !== "undefined"
+      armazenamento: typeof NesiStorage !== "undefined",
+      avaliador: typeof NesiModelEvaluator !== "undefined"
     };
 
     const ativos = Object.values(modulos).filter(Boolean).length;
@@ -28,7 +28,7 @@ const NesiApp = {
       versao: this.versao,
       modulos,
       totalModulos: ativos,
-      estado: ativos === 7 ? "OPERACIONAL" : "EM INTEGRACAO"
+      estado: ativos === 8 ? "OPERACIONAL" : "EM INTEGRACAO"
     };
   },
 
@@ -71,6 +71,31 @@ const NesiApp = {
   historicoExperiencias() {
     return typeof NesiModelLab !== "undefined"
       ? NesiModelLab.historico()
+      : [];
+  },
+
+  avaliarModelo(reais, estimativas, nomeModelo) {
+    return typeof NesiModelEvaluator !== "undefined"
+      ? NesiModelEvaluator.avaliar(
+          reais,
+          estimativas,
+          nomeModelo
+        )
+      : null;
+  },
+
+  compararModelos(resultadoA, resultadoB) {
+    return typeof NesiModelEvaluator !== "undefined"
+      ? NesiModelEvaluator.comparar(
+          resultadoA,
+          resultadoB
+        )
+      : null;
+  },
+
+  historicoAvaliacoes() {
+    return typeof NesiModelEvaluator !== "undefined"
+      ? NesiModelEvaluator.historico()
       : [];
   },
 
@@ -126,3 +151,4 @@ if (typeof window !== "undefined") {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = NesiApp;
 }
+
