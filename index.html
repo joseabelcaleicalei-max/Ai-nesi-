@@ -466,6 +466,39 @@ document.addEventListener("DOMContentLoaded", function () {
     "Registos históricos: " + resumo.totalRegistos;
 });
 </script>
+<script>
+document.getElementById("nesi-guardar").addEventListener("click", function () {
+
+  const jogo = document.getElementById("nesi-jogo").value;
+  const texto = document.getElementById("nesi-resultado").value.trim();
+  const mensagem = document.getElementById("nesi-mensagem");
+
+  if (!texto) {
+    mensagem.textContent = "Introduz um resultado.";
+    return;
+  }
+
+  const resultado = jogo === "bacbo"
+    ? texto
+    : Number(texto.replace(",", "."));
+
+  const resposta = NesiApp.guardarRegisto(jogo, resultado);
+
+  if (!resposta || !resposta.sucesso) {
+    mensagem.textContent = resposta
+      ? resposta.mensagem
+      : "Não foi possível guardar.";
+    return;
+  }
+
+  mensagem.textContent = "Registo guardado com sucesso!";
+
+  document.getElementById("nesi-resultado").value = "";
+
+  document.getElementById("nesi-records").textContent =
+    "Registos históricos: " + NesiStorage.total();
+});
+</script>
 </body>
 </html>
 
