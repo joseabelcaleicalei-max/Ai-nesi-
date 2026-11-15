@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -43,39 +42,58 @@
 <script src="validator.js"></script>
 <script src="model-lab.js"></script>
 <script src="storage.js"></script>
+<script src="model-evaluator.js"></script>
+<script src="prediction-engine.js"></script>
 <script src="app.js"></script>
+<script src="dashboard.js"></script>
 
 <script>
 const resultado = document.getElementById("resultado");
 
-const diagnostico = NesiApp.inicializar();
+if (typeof NesiApp === "undefined") {
+  resultado.textContent = "ERRO: controlador principal não carregado.";
+} else {
+  const diagnostico = NesiApp.inicializar();
 
-resultado.innerHTML = "";
+  resultado.innerHTML = "";
 
-Object.entries(diagnostico.modulos).forEach(([nome, ativo]) => {
-  const caixa = document.createElement("div");
-  caixa.className = "modulo";
+  Object.entries(diagnostico.modulos).forEach(([nome, ativo]) => {
+    const caixa = document.createElement("div");
+    caixa.className = "modulo";
 
-  const estado = document.createElement("strong");
-  estado.className = ativo ? "ok" : "erro";
-  estado.textContent = ativo ? "CARREGADO" : "NÃO CARREGADO";
+    const estado = document.createElement("strong");
+    estado.className = ativo ? "ok" : "erro";
+    estado.textContent = ativo ? "CARREGADO" : "NÃO CARREGADO";
 
-  caixa.textContent = nome.toUpperCase() + ": ";
-  caixa.appendChild(estado);
+    caixa.textContent = nome.toUpperCase() + ": ";
+    caixa.appendChild(estado);
 
-  resultado.appendChild(caixa);
-});
+    resultado.appendChild(caixa);
+  });
 
-const geral = document.createElement("div");
-geral.className = "modulo";
+  const geral = document.createElement("div");
+  geral.className = "modulo";
 
-geral.innerHTML =
-  "<h3>Estado geral</h3>" +
-  "<p>" + diagnostico.estado + "</p>" +
-  "<p>Módulos ativos: " +
-  diagnostico.totalModulos + "/7</p>";
+  const total = Object.keys(diagnostico.modulos).length;
 
-resultado.appendChild(geral);
+  geral.innerHTML =
+    "<h3>Estado geral</h3>" +
+    "<p>" + diagnostico.estado + "</p>" +
+    "<p>Módulos ativos: " +
+    diagnostico.totalModulos + "/" + total + "</p>";
+
+  resultado.appendChild(geral);
+
+  const painel = document.createElement("div");
+  painel.className = "modulo";
+
+  painel.textContent =
+    typeof NesiDashboard !== "undefined"
+      ? "DASHBOARD: CARREGADO"
+      : "DASHBOARD: NÃO CARREGADO";
+
+  resultado.appendChild(painel);
+}
 </script>
 
 </body>
