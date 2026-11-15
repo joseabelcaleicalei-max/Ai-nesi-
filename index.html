@@ -426,6 +426,30 @@ atualizar();
   <p id="nesi-modules">Módulos: a verificar...</p>
   <p id="nesi-records">Registos históricos: a verificar...</p>
 </section>
+<section style="background:#111827;color:white;padding:20px;margin:20px;border:1px solid #d4af37;border-radius:12px;">
+
+  <h2 style="color:#d4af37;">Registar resultados</h2>
+
+  <label for="nesi-jogo">Selecionar jogo:</label>
+
+  <select id="nesi-jogo" style="display:block;width:100%;padding:12px;margin:10px 0;">
+    <option value="aviator">Aviator</option>
+    <option value="spaceman">Spaceman</option>
+    <option value="jetx">JetX</option>
+    <option value="bacbo">Bac Bo</option>
+  </select>
+
+  <label for="nesi-resultado">Resultado observado:</label>
+
+  <input id="nesi-resultado" type="text" placeholder="Ex.: 2.45" style="display:block;width:100%;padding:12px;margin:10px 0;">
+
+  <button id="nesi-guardar" style="padding:12px;background:#d4af37;color:#111;border:0;border-radius:8px;">
+    Guardar registo
+  </button>
+
+  <p id="nesi-mensagem"></p>
+
+</section>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const estado = NesiDashboard.obterEstado();
