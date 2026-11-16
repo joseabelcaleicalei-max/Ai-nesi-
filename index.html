@@ -312,7 +312,29 @@
     atualizar();
   }
 
-  function atualizar() {
+  function analisar() {
+  const jogo = $("jogo").value;
+
+  const resultado = NesiApp.analisarHistorico(jogo);
+
+  if (!resultado || !resultado.sucesso) {
+    $("notaAnalise").textContent =
+      resultado?.mensagem || "Não foi possível realizar a análise.";
+    return;
+  }
+
+  $("estatTotal").textContent = resultado.quantidade;
+  $("media").textContent = resultado.media.toFixed(2);
+  $("minimo").textContent = resultado.minimo.toFixed(2);
+  $("maximo").textContent = resultado.maximo.toFixed(2);
+
+  $("notaAnalise").textContent =
+    "Análise concluída. " +
+    "Mediana: " + resultado.mediana +
+    " | Desvio padrão: " + resultado.desvioPadrao +
+    " | Amplitude: " + resultado.amplitude +
+    ". Resultados descritivos, não previsões.";
+}
     const jogo = $("jogo").value;
     const historico = NesiApp.obterHistorico(jogo) || [];
 
