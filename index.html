@@ -1,1 +1,445 @@
 
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101014">
+  <title>NESÍ AI — Painel de Análise</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #101014;
+      color: #f5f5f5;
+      padding: 18px;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 25px 10px;
+      border-bottom: 1px solid #333;
+      margin-bottom: 22px;
+    }
+
+    header h1 {
+      color: #d8ad55;
+      font-size: 30px;
+      letter-spacing: 3px;
+    }
+
+    header p {
+      color: #aaa;
+      margin-top: 8px;
+    }
+
+    .panel {
+      background: #1b1b22;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      color: #d8ad55;
+      font-size: 19px;
+      margin-bottom: 15px;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .status span {
+      color: #ccc;
+    }
+
+    .value {
+      color: #d8ad55;
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin: 13px 0 7px;
+      color: #ccc;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #111116;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 13px;
+      border: none;
+      border-radius: 8px;
+      background: #d8ad55;
+      color: #171717;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #33333d;
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      background: #111116;
+      border: 1px solid #333;
+      padding: 14px;
+      border-radius: 8px;
+    }
+
+    .stat small {
+      display: block;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .stat strong {
+      color: #d8ad55;
+      font-size: 20px;
+    }
+
+    #mensagem {
+      margin-top: 12px;
+      color: #d8ad55;
+      line-height: 1.5;
+    }
+
+    #historico {
+      margin-top: 12px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .registo {
+      display: flex;
+      justify-content: space-between;
+      padding: 11px;
+      border-bottom: 1px solid #333;
+      color: #ddd;
+      gap: 10px;
+    }
+
+    .nota {
+      color: #999;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      body {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <header>
+    <h1>NESÍ AI</h1>
+    <p>Painel de análise estatística e experimental</p>
+  </header>
+
+  <section class="panel">
+    <h2>Estado do sistema</h2>
+
+    <div class="status">
+      <span>Estado:</span>
+      <strong class="value" id="estado">A verificar...</strong>
+    </div>
+
+    <div class="status">
+      <span>Módulos ativos:</span>
+      <strong class="value" id="modulos">0/9</strong>
+    </div>
+
+    <div class="status">
+      <span>Registos guardados:</span>
+      <strong class="value" id="totalRegistos">0</strong>
+    </div>
+
+    <p id="mensagem">A iniciar o NESÍ AI...</p>
+  </section>
+
+  <section class="panel">
+    <h2>Registar resultados históricos</h2>
+
+    <label for="jogo">Selecionar jogo</label>
+    <select id="jogo">
+      <option value="aviator">Aviator</option>
+      <option value="spaceman">Spaceman</option>
+      <option value="jetx">JetX</option>
+      <option value="bacbo">Bac Bo</option>
+    </select>
+
+    <label for="resultado">Resultado observado</label>
+    <input
+      id="resultado"
+      type="text"
+      placeholder="Ex.: 2.45 ou Player"
+      autocomplete="off"
+    >
+
+    <button id="guardar">Guardar registo</button>
+    <p class="nota">
+      Introduz resultados que observaste. O sistema guarda os dados
+      para análise estatística, sem indicar entradas ou apostas.
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>Resumo estatístico</h2>
+
+    <div class="grid">
+      <div class="stat">
+        <small>Total de registos</small>
+        <strong id="estatTotal">0</strong>
+      </div>
+
+      <div class="stat">
+        <small>Média</small>
+        <strong id="media">—</strong>
+      </div>
+
+      <div class="stat">
+        <small>Valor mínimo</small>
+        <strong id="minimo">—</strong>
+      </div>
+
+      <div class="stat">
+        <small>Valor máximo</small>
+        <strong id="maximo">—</strong>
+      </div>
+    </div>
+
+    <button class="secondary" id="analisar">Atualizar análise</button>
+    <p class="nota" id="notaAnalise">
+      Os cálculos são descritivos e usam apenas os dados registados.
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>Histórico</h2>
+    <div id="historico">
+      <p class="nota">Ainda não existem registos.</p>
+    </div>
+
+    <button class="secondary" id="limpar">Limpar histórico</button>
+  </section>
+
+  <section class="panel">
+    <h2>Sobre o NESÍ AI</h2>
+    <p class="nota">
+      O NESÍ AI reúne módulos de validação, estatística, análise,
+      armazenamento e avaliação experimental. As análises descrevem
+      os dados históricos e não garantem resultados futuros.
+    </p>
+  </section>
+
+</div>
+
+<!-- Módulos do NESÍ AI -->
+<script src="games.js"></script>
+<script src="statistics.js"></script>
+<script src="analyzer.js"></script>
+<script src="charts.js"></script>
+<script src="validator.js"></script>
+<script src="model-lab.js"></script>
+<script src="storage.js"></script>
+<script src="model-evaluator.js"></script>
+<script src="prediction-engine.js"></script>
+<script src="app.js"></script>
+<script src="dashboard.js"></script>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+
+  function iniciar() {
+    if (typeof NesiApp === "undefined") {
+      $("estado").textContent = "ERRO";
+      $("mensagem").textContent = "O controlador principal não foi carregado.";
+      return;
+    }
+
+    const diagnostico = NesiApp.inicializar();
+
+    $("estado").textContent = diagnostico.estado;
+    $("modulos").textContent =
+      diagnostico.totalModulos + "/9";
+
+    atualizar();
+  }
+
+  function atualizar() {
+    const jogo = $("jogo").value;
+    const historico = NesiApp.obterHistorico(jogo) || [];
+
+    $("totalRegistos").textContent = historico.length;
+    $("estatTotal").textContent = historico.length;
+
+    const lista = $("historico");
+    lista.innerHTML = "";
+
+    if (historico.length === 0) {
+      lista.innerHTML =
+        '<p class="nota">Ainda não existem registos para este jogo.</p>';
+    } else {
+      historico.slice().reverse().forEach(registo => {
+        const linha = document.createElement("div");
+        linha.className = "registo";
+
+        const resultado = document.createElement("span");
+        resultado.textContent = String(registo.resultado);
+
+        const data = document.createElement("small");
+        data.textContent = registo.data
+          ? new Date(registo.data).toLocaleString()
+          : "";
+
+        linha.appendChild(resultado);
+        linha.appendChild(data);
+        lista.appendChild(linha);
+      });
+    }
+
+    analisar();
+  }
+
+  function analisar() {
+    const jogo = $("jogo").value;
+    const historico = NesiApp.obterHistorico(jogo) || [];
+
+    const valores = historico
+      .map(r => r.resultado)
+      .filter(v => typeof v === "number" && Number.isFinite(v));
+
+    if (valores.length === 0) {
+      $("media").textContent = "—";
+      $("minimo").textContent = "—";
+      $("maximo").textContent = "—";
+      $("notaAnalise").textContent =
+        "Ainda não existem resultados numéricos suficientes.";
+      return;
+    }
+
+    const soma = valores.reduce((a, b) => a + b, 0);
+    const media = soma / valores.length;
+
+    $("media").textContent = media.toFixed(2);
+    $("minimo").textContent = Math.min(...valores).toFixed(2);
+    $("maximo").textContent = Math.max(...valores).toFixed(2);
+
+    $("notaAnalise").textContent =
+      valores.length + " resultados numéricos analisados. " +
+      "Estatísticas descritivas do histórico, não previsões.";
+  }
+
+  $("guardar").addEventListener("click", function () {
+    const jogo = $("jogo").value;
+    const texto = $("resultado").value.trim();
+
+    if (!texto) {
+      $("mensagem").textContent = "Introduz um resultado primeiro.";
+      return;
+    }
+
+    let resultado;
+
+    if (jogo === "bacbo") {
+      const opcoes = ["player", "banker", "tie"];
+      resultado = texto.toLowerCase();
+
+      if (!opcoes.includes(resultado)) {
+        $("mensagem").textContent =
+          "Para Bac Bo, usa Player, Banker ou Tie.";
+        return;
+      }
+
+      resultado =
+        resultado.charAt(0).toUpperCase() + resultado.slice(1);
+    } else {
+      resultado = Number(texto);
+
+      if (!Number.isFinite(resultado) || resultado <= 0) {
+        $("mensagem").textContent =
+          "Introduz um número válido maior que zero.";
+        return;
+      }
+    }
+
+    const resposta = NesiApp.guardarRegisto(jogo, resultado);
+
+    if (resposta) {
+      $("resultado").value = "";
+      $("mensagem").textContent = "Registo guardado com sucesso.";
+      atualizar();
+    } else {
+      $("mensagem").textContent =
+        "Não foi possível guardar. Verifica o módulo de armazenamento.";
+    }
+  });
+
+  $("jogo").addEventListener("change", atualizar);
+  $("analisar").addEventListener("click", analisar);
+
+  $("limpar").addEventListener("click", function () {
+    const confirmar = window.confirm(
+      "Tens a certeza de que queres apagar o histórico deste jogo?"
+    );
+
+    if (!confirmar) return;
+
+    NesiApp.limparHistorico($("jogo").value);
+    $("mensagem").textContent = "Histórico limpo.";
+    atualizar();
+  });
+
+  iniciar();
+})();
+</script>
+
+</body>
+</html>
+
