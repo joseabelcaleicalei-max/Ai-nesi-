@@ -1,1 +1,200 @@
 
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NESÍ AI — Laboratório</title>
+
+<style>
+body {
+  background: #101014;
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 18px;
+}
+.container {
+  max-width: 650px;
+  margin: auto;
+}
+h1, h2 {
+  color: #d8ad55;
+}
+.panel {
+  background: #1b1b22;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+textarea, input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin: 10px 0;
+  background: #111116;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 8px;
+}
+button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 10px;
+  background: #d8ad55;
+  color: #111;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+.resultado {
+  background: #111116;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>NESÍ AI</h1>
+<p>Laboratório de experiências estatísticas</p>
+
+<div class="panel">
+<h2>Experiência 1</h2>
+<label>Introduz números separados por vírgulas:</label>
+<textarea id="dados1">2, 3, 5</textarea>
+<button onclick="executar1()">Executar experiência 1</button>
+<div class="resultado" id="resultado1">Aguardando dados...</div>
+</div>
+
+<div class="panel">
+<h2>Experiência 2</h2>
+<label>Introduz outro conjunto de números:</label>
+<textarea id="dados2">4, 6, 8</textarea>
+<button onclick="executar2()">Executar experiência 2</button>
+<div class="resultado" id="resultado2">Aguardando dados...</div>
+</div>
+
+<div class="panel">
+<h2>Comparação</h2>
+<button onclick="comparar()">Comparar experiências</button>
+<div class="resultado" id="comparacao">Aguardando duas experiências...</div>
+</div>
+
+<div class="panel">
+<h2>Histórico do laboratório</h2>
+<div id="historico">Nenhuma experiência realizada.</div>
+<button onclick="limpar()">Limpar experiências</button>
+</div>
+
+</div>
+
+<script src="model-lab.js"></script>
+
+<script>
+let experiencia1 = null;
+let experiencia2 = null;
+
+function obterDados(id) {
+  return document.getElementById(id).value
+    .split(",")
+    .map(v => Number(v.trim()))
+    .filter(v => Number.isFinite(v));
+}
+
+function mostrarResultado(id, resposta) {
+  const elemento = document.getElementById(id);
+
+  if (!resposta.sucesso) {
+    elemento.textContent = resposta.mensagem;
+    return;
+  }
+
+  const r = resposta.resultado;
+
+  elemento.innerHTML =
+    "Modelo: " + r.modelo + "<br>" +
+    "Quantidade: " + r.quantidade + "<br>" +
+    "Média: " + r.media + "<br>" +
+    "Variância: " + r.variancia + "<br>" +
+    "Desvio padrão: " + r.desvioPadrao + "<br>" +
+    "Mínimo: " + r.minimo + "<br>" +
+    "Máximo: " + r.maximo;
+}
+
+function executar1() {
+  const dados = obterDados("dados1");
+
+  experiencia1 = NesiModelLab.executar(
+    dados, "Experiência 1"
+  );
+
+  mostrarResultado("resultado1", experiencia1);
+  atualizarHistorico();
+}
+
+function executar2() {
+  const dados = obterDados("dados2");
+
+  experiencia2 = NesiModelLab.executar(
+    dados, "Experiência 2"
+  );
+
+  mostrarResultado("resultado2", experiencia2);
+  atualizarHistorico();
+}
+
+function comparar() {
+  if (!experiencia1 || !experiencia2 ||
+      !experiencia1.sucesso || !experiencia2.sucesso) {
+    document.getElementById("comparacao").textContent =
+      "Executa primeiro as duas experiências.";
+    return;
+  }
+
+  const resultado = NesiModelLab.comparar(
+    experiencia1.resultado,
+    experiencia2.resultado
+  );
+
+  document.getElementById("comparacao").textContent =
+    "Diferença entre médias: " +
+    resultado.diferencaMedia +
+    " | Diferença entre desvios padrão: " +
+    resultado.diferencaDesvio;
+}
+
+function atualizarHistorico() {
+  const lista = NesiModelLab.historico();
+
+  document.getElementById("historico").innerHTML =
+    lista.map(item =>
+      "<p>" + item.modelo +
+      " — Média: " + item.media +
+      " — Desvio padrão: " + item.desvioPadrao +
+      "</p>"
+    ).join("");
+}
+
+function limpar() {
+  NesiModelLab.limpar();
+  experiencia1 = null;
+  experiencia2 = null;
+  atualizarHistorico();
+  document.getElementById("comparacao").textContent =
+    "Histórico limpo.";
+}
+
+if (typeof NesiModelLab === "undefined") {
+  document.body.innerHTML =
+    "<h2>Erro: módulo Laboratório não carregado.</h2>";
+}
+</script>
+
+</body>
+</html>
